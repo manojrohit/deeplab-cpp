@@ -1,0 +1,2 @@
+model_dir: data/cityscapes/checkpoint/deeplab_1024_2048_v3.pb
+image_dir: data/cityscapes/images
