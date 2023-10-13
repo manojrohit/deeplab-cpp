@@ -28,7 +28,7 @@ $ sudo apt install apt-transport-https curl gnupg -y
 $ curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
 $ sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
 $ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
-$ sudo apt update && sudo apt install bazel
+$ sudo apt update && sudo apt install bazel-5.1.1
 
 ```
 
@@ -39,7 +39,7 @@ $ sudo apt update && sudo apt install bazel
 ```bash
 $ git clone https://github.com/tensorflow/tensorflow.git
 $ cd tensorflow
-$ git checkout v2.7.0
+$ git checkout v2.10.0
 $ ./configure
 
 The below choices may vary for different installations. As an example I have specified my configuration 
@@ -62,10 +62,35 @@ Found possible Python library paths:
   /root/miniconda3/lib/python3.8/site-packages
 
 $ bazel build --config=opt //tensorflow:libtensorflow_cc.so
-$ sudo cp bazel-bin/tensorflow/libtensorflow_cc.so /usr/local/lib
-$ sudo ldconfig
-$ sudo cp -r tensorflow /usr/local/include
+```
 
+### Copy the bazel output for tensorflow installation
+  
+```bash
+$ mkdir -p /home/${USER}/tensorflow_lib
+
+$ cp -d bazel-bin/tensorflow/libtensorflow_cc.so* /home/${USER}/tensorflow_lib/
+$ cp -d bazel-bin/tensorflow/libtensorflow_framework.so* /home/${USER}/tensorflow_lib/
+$ cp -d $tensorflow_root/libtensorflow_framework.so.2 /home/${USER}/tensorflow_lib/libtensorflow_framework.so
+
+$ mkdir -p /home/${USER}/tensorflow_include/
+$ mkdir -p /home/${USER}/tensorflow_include/include/
+$ mkdir -p /home/${USER}/tensorflow_include/include/tensorflow
+$ rsync -avzh --exclude '_virtual_includes/' --include '*/' --include '*.h' --include '*.inc' --exclude '*' bazel-bin/ /home/${USER}/tensorflow_include/include/
+$ rsync -avzh --include '*/' --include '*.h' --include '*.inc' --exclude '*' tensorflow/cc /home/${USER}/tensorflow_include/include/tensorflow/
+$ rsync -avzh --include '*/' --include '*.h' --include '*.inc' --exclude '*' tensorflow/core /home/${USER}/tensorflow_include/include/tensorflow/
+$ rsync -avzh --include '*/' --include '*' --exclude '*.cc' third_party/ /home/${USER}/tensorflow_include/include/third_party/
+$ rsync -avzh --include '*/' --include '*' --exclude '*.txt' bazel-tensorflow/external/eigen_archive/Eigen/ /home/${USER}/tensorflow_include/include/Eigen/
+$ rsync -avzh --include '*/' --include '*' --exclude '*.txt' bazel-tensorflow/external/eigen_archive/unsupported/ /home/${USER}/tensorflow_include/include/unsupported/
+$ rsync -avzh --include '*/' --include '*.h' --include '*.inc' --exclude '*' bazel-tensorflow/external/com_google_protobuf/src/google/ /home/${USER}/tensorflow_include/include/google/
+$ rsync -avzh --include '*/' --include '*.h' --include '*.inc' --exclude '*' bazel-tensorflow/external/com_google_absl/absl/ /home/${USER}/tensorflow_include/include/absl/
+
+```
+
+### Set LD_LIBRARY_PATH
+
+```bash
+$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/${USER}/tensorflow_lib/
 ```
 
 

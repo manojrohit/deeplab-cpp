@@ -3,9 +3,6 @@
 #include <image.h>
 #include "yaml-cpp/yaml.h"
 
-using namespace tensorflow;
-using namespace tensorflow::ops;
-
 
 int main(int argc, char *argv[]){
 
@@ -35,5 +32,5 @@ int main(int argc, char *argv[]){
             model_from_pb.predictInputs(file_path);
     }
 
-    // return 0;
+    return 0;
 }

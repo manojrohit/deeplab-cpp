@@ -5,9 +5,11 @@ CXX := g++
 SRC_DIR := src
 INC_DIR := include
 BUILD_DIR := build
-LIB_DIR := /usr/local/lib
-TENSORFLOW_INC_DIR := /home/manoj/.local/lib/python3.10/site-packages/tensorflow/include
-OPENCV_INC_DIR := /usr/local/include/opencv4
+LIB_DIR := /usr/lib/x86_64-linux-gnu
+TENSORFLOW_LIB_DIR := /home/mvemparala/tensorflow_lib
+TENSORFLOW_INC_DIR := /home/mvemparala/tensorflow_include/include
+INCLUDE_DIR:= /usr/local/include/
+OPENCV_INC_DIR := /usr/include/opencv4
 
 # Libraries
 TENSORFLOW_LIBS := -ltensorflow_cc -ltensorflow_framework
@@ -27,10 +29,10 @@ $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
 
 $(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^ -L$(LIB_DIR) $(TENSORFLOW_LIBS) $(OPENCV_LIBS) $(YAML_LIBS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ -L$(LIB_DIR) -L$(TENSORFLOW_LIB_DIR) $(TENSORFLOW_LIBS) $(OPENCV_LIBS) $(YAML_LIBS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) -I$(INC_DIR) -I$(TENSORFLOW_INC_DIR) -I$(OPENCV_INC_DIR) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -I$(INC_DIR) -I$(TENSORFLOW_INC_DIR) -I$(INCLUDE_DIR) -I$(OPENCV_INC_DIR) -c -o $@ $<
 
 clean:
 	@rm -rf $(BUILD_DIR) $(TARGET)

@@ -5,7 +5,6 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/protobuf/meta_graph.pb.h"
 #include "tensorflow/core/platform/threadpool.h"
-#include "tensorflow/tsl/platform/status.h"
 #include "yaml-cpp/yaml.h"
 #include <opencv2/opencv.hpp>
 #include <dirent.h>
